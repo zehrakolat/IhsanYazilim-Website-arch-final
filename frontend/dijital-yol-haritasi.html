@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acentenin Görünmeyen Ekibi | Dijital Yol Haritası</title>
+  <style>
+    :root {
+      --bg:#050b16;
+      --panel:rgba(10,23,42,.82);
+      --panel2:rgba(14,31,54,.90);
+      --stroke:rgba(255,255,255,.09);
+      --text:#f5f9ff;
+      --muted:#a9bdd3;
+      --blue:#58c7ff;
+      --cyan:#50ffd5;
+      --purple:#9c83ff;
+      --pink:#ff75c7;
+      --gold:#ffd166;
+      --green:#7cff9b;
+      --shadow:0 24px 70px rgba(0,0,0,.38);
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#02050c;font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--text)}
+    body{display:flex;align-items:center;justify-content:center}
+
+    #viewport{position:relative;width:1920px;height:1080px;transform-origin:center center;overflow:hidden;background:
+      radial-gradient(circle at 15% 16%,rgba(88,199,255,.18),transparent 23%),
+      radial-gradient(circle at 86% 15%,rgba(80,255,213,.12),transparent 22%),
+      radial-gradient(circle at 76% 84%,rgba(156,131,255,.14),transparent 24%),
+      linear-gradient(145deg,#08111f 0%,#07101d 34%,#030812 100%);
+    }
+
+    .grid,.grid::before,.grid::after{position:absolute;inset:0;pointer-events:none}
+    .grid{background:
+      linear-gradient(rgba(255,255,255,.028) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.028) 1px,transparent 1px);
+      background-size:90px 90px;opacity:.55;animation:gridMove 24s linear infinite}
+    .grid::before{content:"";background:
+      radial-gradient(circle at 18% 28%,rgba(88,199,255,.16),transparent 18%),
+      radial-gradient(circle at 80% 28%,rgba(80,255,213,.14),transparent 18%),
+      radial-gradient(circle at 70% 82%,rgba(255,117,199,.10),transparent 20%);
+      filter:blur(44px);animation:fog 9s ease-in-out infinite alternate}
+    .grid::after{content:"";background:linear-gradient(115deg,transparent 0%,rgba(255,255,255,.05) 48%,transparent 56%);transform:translateX(-120%);animation:sweep 8s linear infinite}
+
+    .orb{position:absolute;border-radius:50%;filter:blur(5px);opacity:.18;mix-blend-mode:screen;animation:drift 18s ease-in-out infinite}
+    .o1{width:360px;height:360px;left:-70px;top:90px;background:radial-gradient(circle,rgba(88,199,255,.8),transparent 70%)}
+    .o2{width:430px;height:430px;right:-80px;top:80px;background:radial-gradient(circle,rgba(80,255,213,.7),transparent 70%);animation-duration:20s}
+    .o3{width:330px;height:330px;right:460px;bottom:-110px;background:radial-gradient(circle,rgba(156,131,255,.75),transparent 70%);animation-duration:22s}
+
+    .layout{position:absolute;inset:0;padding:34px 42px;display:grid;grid-template-columns:1.18fr .82fr;grid-template-rows:78px 1fr 286px;gap:20px;z-index:2}
+
+    .glass{position:relative;overflow:hidden;background:linear-gradient(180deg,rgba(17,34,58,.86),rgba(8,18,32,.84));border:1px solid var(--stroke);border-radius:26px;box-shadow:var(--shadow);backdrop-filter:blur(16px)}
+    .glass::before{content:"";position:absolute;top:0;left:-50%;width:36%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent);transform:skewX(-18deg);animation:glare 10s ease-in-out infinite;pointer-events:none}
+    .glass::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:linear-gradient(90deg,transparent,var(--blue),var(--cyan),var(--purple),transparent);background-size:180% auto;animation:flow 5s linear infinite}
+
+    .topbar{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:14px 20px}
+    .brand{display:flex;align-items:center;gap:16px}.logo{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(145deg,rgba(88,199,255,.2),rgba(80,255,213,.18));border:1px solid rgba(255,255,255,.12);font-weight:900;letter-spacing:.08em;position:relative}
+    .logo::after{content:"";position:absolute;inset:-22%;background:conic-gradient(from 0deg,transparent,rgba(255,255,255,.42),transparent 32%);animation:spin 5s linear infinite;mask:radial-gradient(circle at center,transparent 48%,black 50%)}
+    .brand small{display:block;color:var(--cyan);font-size:12px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:3px}.brand h1{margin:0;font-size:23px}
+    .status{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;letter-spacing:.11em;text-transform:uppercase}.status i{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(124,255,155,.6);animation:ping 1.8s infinite}
+
+    .hero{padding:34px 36px;display:flex;flex-direction:column;justify-content:space-between}
+    .eyebrow{display:inline-flex;align-items:center;gap:10px;padding:9px 14px;width:fit-content;border-radius:999px;background:rgba(88,199,255,.11);border:1px solid rgba(88,199,255,.18);color:#dff3ff;font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:18px}.eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--blue);box-shadow:0 0 14px var(--blue)}
+
+    .hero-title{margin:0 0 16px;line-height:.92;letter-spacing:-.045em}
+    .hero-title .main{display:block;font-size:72px;font-weight:900;background:linear-gradient(90deg,#fff 0%,#a9eaff 32%,#6fffe0 67%,#fff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% auto;animation:flow 6s linear infinite}
+    .hero-title .roadmap{display:block;font-size:58px;font-weight:900;margin-top:14px;color:#08111d;padding:13px 22px 15px;width:fit-content;border-radius:18px;background:linear-gradient(90deg,var(--gold),var(--cyan),var(--blue),var(--purple));background-size:220% auto;animation:flow 5s linear infinite;box-shadow:0 14px 42px rgba(88,199,255,.18)}
+
+    .slogan{font-size:29px;font-weight:800;color:#fff;margin:18px 0 12px;letter-spacing:-.02em}.slogan span{color:var(--gold)}
+    .hero p{margin:0;max-width:980px;font-size:19px;line-height:1.5;color:var(--muted)}
+
+    .chip-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}.chip{padding:10px 14px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);font-size:15px;color:#e8f5ff;animation:chipFloat 6s ease-in-out infinite}.chip:nth-child(2){animation-delay:.5s}.chip:nth-child(3){animation-delay:1s}.chip:nth-child(4){animation-delay:1.5s}.chip:nth-child(5){animation-delay:2s}.chip:nth-child(6){animation-delay:2.5s}
+
+    .hero-bottom{display:grid;grid-template-columns:1.06fr .94fr;gap:14px;margin-top:18px}.sub{padding:16px;border-radius:20px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08)}.sub h3{margin:0 0 12px;font-size:18px}
+    .metric{margin-bottom:11px}.metric:last-child{margin-bottom:0}.metric-head{display:flex;justify-content:space-between;font-size:14px;margin-bottom:7px}.track{height:10px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden}.fill{height:100%;border-radius:inherit;position:relative;background-size:180% auto;animation:flow 4s linear infinite}.fill::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transform:translateX(-100%);animation:scan 2.6s ease-in-out infinite}.f1{width:92%;background-image:linear-gradient(90deg,var(--blue),var(--cyan))}.f2{width:86%;background-image:linear-gradient(90deg,var(--purple),var(--pink))}.f3{width:81%;background-image:linear-gradient(90deg,var(--gold),var(--green))}
+    .counter-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.counter{padding:13px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}.counter .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.counter .num{font-size:28px;font-weight:900;margin-top:7px}
+
+    .side{padding:24px;display:grid;grid-template-rows:auto 1fr;min-height:0}.side h3,.bottom h3{margin:0;font-size:24px}.subline{color:var(--muted);font-size:14px;margin-top:6px}
+    .chart-grid{display:grid;grid-template-rows:1fr 1fr;gap:14px;margin-top:16px;min-height:0}.chart-card{padding:15px;border-radius:20px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);min-height:0}.chart-card h4{margin:0 0 10px;font-size:17px}
+
+    .bars{height:190px;display:flex;align-items:end;justify-content:space-between;gap:13px}.barcol{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:end;gap:7px;height:100%}.barwrap{height:142px;width:100%;max-width:58px;border-radius:15px 15px 9px 9px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);overflow:hidden;display:flex;align-items:end}.bar{width:100%;border-radius:13px 13px 8px 8px;background-size:180% auto;animation:flow 4s linear infinite,rise 3s ease-in-out infinite alternate;position:relative}.bar::after{content:"";position:absolute;left:0;right:0;top:0;height:16px;background:linear-gradient(180deg,rgba(255,255,255,.34),transparent)}.b1{height:45%;background-image:linear-gradient(180deg,var(--blue),var(--cyan))}.b2{height:60%;background-image:linear-gradient(180deg,var(--purple),var(--pink))}.b3{height:76%;background-image:linear-gradient(180deg,var(--gold),var(--green))}.b4{height:92%;background-image:linear-gradient(180deg,var(--cyan),var(--blue))}.pct{font-size:16px;font-weight:900}.lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+
+    .line-svg{width:100%;height:180px;display:block}.gridline{stroke:rgba(255,255,255,.11);stroke-width:1}.line{fill:none;stroke:url(#lineGrad);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1000;stroke-dashoffset:1000;animation:draw 6s ease-in-out infinite;filter:drop-shadow(0 0 7px rgba(88,199,255,.55))}.area{fill:url(#areaGrad);opacity:.34;animation:areaPulse 4s ease-in-out infinite alternate}.dot{fill:white;filter:drop-shadow(0 0 7px rgba(255,255,255,.8));animation:dot 2.2s infinite}
+
+    .bottom{grid-column:1/-1;padding:22px 24px;display:grid;grid-template-rows:auto 1fr;min-height:0}.benefits{display:grid;grid-template-columns:repeat(6,1fr);gap:13px;margin-top:16px}.benefit{position:relative;padding:18px 15px;border-radius:19px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);min-height:168px;overflow:hidden;animation:lift 6s ease-in-out infinite}.benefit:nth-child(2){animation-delay:.45s}.benefit:nth-child(3){animation-delay:.9s}.benefit:nth-child(4){animation-delay:1.35s}.benefit:nth-child(5){animation-delay:1.8s}.benefit:nth-child(6){animation-delay:2.25s}.benefit::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:var(--accent);box-shadow:0 0 18px var(--accent)}.benefit .icon{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;margin-bottom:14px;font-weight:900;font-size:19px;background:color-mix(in srgb,var(--accent) 18%,transparent);border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);color:#fff}.benefit h4{margin:0 0 8px;font-size:18px}.benefit p{margin:0;color:#c8d9e9;font-size:13px;line-height:1.45}.benefit .mini{position:absolute;left:15px;right:15px;bottom:14px;height:8px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden}.benefit .mini span{display:block;height:100%;width:var(--w);background:linear-gradient(90deg,var(--accent),#fff);border-radius:inherit;animation:miniPulse 3s ease-in-out infinite alternate}
+
+    .ticker{position:absolute;left:26px;right:26px;bottom:9px;height:17px;overflow:hidden;white-space:nowrap;color:rgba(255,255,255,.34);font-size:10px;letter-spacing:.12em;text-transform:uppercase}.ticker span{display:inline-block;padding-left:100%;animation:ticker 24s linear infinite}
+
+    @keyframes gridMove{from{transform:translate(0,0)}to{transform:translate(-70px,-70px)}}
+    @keyframes fog{from{opacity:.62;transform:scale(1)}to{opacity:.95;transform:scale(1.08)}}
+    @keyframes sweep{from{transform:translateX(-120%)}to{transform:translateX(130%)}}
+    @keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(34px,-26px)}}
+    @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+    @keyframes ping{0%{box-shadow:0 0 0 0 rgba(124,255,155,.6)}70%{box-shadow:0 0 0 13px rgba(124,255,155,0)}100%{box-shadow:0 0 0 0 rgba(124,255,155,0)}}
+    @keyframes flow{from{background-position:0% center}to{background-position:200% center}}
+    @keyframes glare{0%,100%{left:-50%}50%{left:130%}}
+    @keyframes chipFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+    @keyframes scan{from{transform:translateX(-100%)}to{transform:translateX(180%)}}
+    @keyframes rise{from{filter:brightness(.94)}to{filter:brightness(1.18)}}
+    @keyframes draw{0%{stroke-dashoffset:1000}24%,76%{stroke-dashoffset:0}100%{stroke-dashoffset:-1000}}
+    @keyframes areaPulse{from{opacity:.24;transform:scaleY(.97);transform-origin:bottom}to{opacity:.42;transform:scaleY(1.02);transform-origin:bottom}}
+    @keyframes dot{0%,100%{transform:scale(1)}50%{transform:scale(1.45)}}
+    @keyframes lift{0%,100%{transform:translateY(0);border-color:rgba(255,255,255,.08)}50%{transform:translateY(-7px);border-color:color-mix(in srgb,var(--accent) 36%,transparent)}}
+    @keyframes miniPulse{from{filter:brightness(.85)}to{filter:brightness(1.25)}}
+    @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+  </style>
+</head>
+<body>
+  <div id="viewport">
+    <div class="grid"></div><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+    <main class="layout">
+      <section class="topbar glass">
+        <div class="brand"><div class="logo">IA</div><div><small>Sigorta Acentesi</small><h1>Acentenin Görünmeyen Ekibi</h1></div></div>
+        <div class="status"><i></i> Dijital dönüşüm sunumu • Canlı görsel panel</div>
+      </section>
+
+      <section class="hero glass">
+        <div>
+          <div class="eyebrow">Yeni nesil acente altyapısı</div>
+          <h2 class="hero-title"><span class="main">Acentenin Görünmeyen Ekibi</span><span class="roadmap">Dijital Yol Haritası</span></h2>
+          <div class="slogan">Bugünü iyileştirir, <span>yarını mümkün kılar.</span></div>
+          <p>Sigorta acentesinin müşteri, teklif, poliçe, yenileme ve operasyon süreçlerini görünür, ölçülebilir ve sürdürülebilir hale getiren dijital dönüşüm modeli.</p>
+          <div class="chip-row"><div class="chip">CRM</div><div class="chip">Teklif Takibi</div><div class="chip">WhatsApp Otomasyonu</div><div class="chip">Poliçe PDF Gönderimi</div><div class="chip">Yenileme Motoru</div><div class="chip">AI Destekli Operasyon</div></div>
+        </div>
+        <div class="hero-bottom">
+          <div class="sub"><h3>Dönüşüm Gücü</h3>
+            <div class="metric"><div class="metric-head"><span>Müşteri deneyimi</span><strong>%92</strong></div><div class="track"><div class="fill f1"></div></div></div>
+            <div class="metric"><div class="metric-head"><span>Operasyon hızı</span><strong>%86</strong></div><div class="track"><div class="fill f2"></div></div></div>
+            <div class="metric"><div class="metric-head"><span>Yenileme verimi</span><strong>%81</strong></div><div class="track"><div class="fill f3"></div></div></div>
+          </div>
+          <div class="sub"><h3>Anlık Vitrin</h3><div class="counter-grid"><div class="counter"><div class="label">Kanal</div><div class="num" data-target="7">0</div></div><div class="counter"><div class="label">Takip Süreci</div><div class="num" data-target="24">0</div></div><div class="counter"><div class="label">Canlı KPI</div><div class="num" data-target="12">0</div></div><div class="counter"><div class="label">Otomasyon</div><div class="num" data-target="98">0</div></div></div></div>
+        </div>
+      </section>
+
+      <section class="side glass">
+        <div><h3>Renkli Performans Grafikleri</h3><div class="subline">Dönüşüm seviyesini sürekli hareket halinde gösterir.</div></div>
+        <div class="chart-grid">
+          <div class="chart-card"><h4>Dijital Olgunluk Seviyesi</h4><div class="bars">
+            <div class="barcol"><div class="barwrap"><div class="bar b1"></div></div><div class="pct">45%</div><div class="lbl">Temel</div></div>
+            <div class="barcol"><div class="barwrap"><div class="bar b2"></div></div><div class="pct">60%</div><div class="lbl">İletişim</div></div>
+            <div class="barcol"><div class="barwrap"><div class="bar b3"></div></div><div class="pct">76%</div><div class="lbl">Operasyon</div></div>
+            <div class="barcol"><div class="barwrap"><div class="bar b4"></div></div><div class="pct">92%</div><div class="lbl">Zekâ</div></div>
+          </div></div>
+          <div class="chart-card"><h4>Büyüme Eğrisi</h4><svg class="line-svg" viewBox="0 0 560 210" preserveAspectRatio="none">
+            <defs><linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#58c7ff"/><stop offset="50%" stop-color="#50ffd5"/><stop offset="100%" stop-color="#ff75c7"/></linearGradient><linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#58c7ff" stop-opacity=".55"/><stop offset="100%" stop-color="#58c7ff" stop-opacity="0"/></linearGradient></defs>
+            <line class="gridline" x1="30" y1="32" x2="30" y2="175"/><line class="gridline" x1="30" y1="175" x2="530" y2="175"/><line class="gridline" x1="30" y1="140" x2="530" y2="140"/><line class="gridline" x1="30" y1="105" x2="530" y2="105"/><line class="gridline" x1="30" y1="70" x2="530" y2="70"/>
+            <path class="area" d="M30 160 L110 146 L190 132 L270 106 L350 82 L430 58 L530 34 L530 175 L30 175 Z"/>
+            <path class="line" d="M30 160 L110 146 L190 132 L270 106 L350 82 L430 58 L530 34"/>
+            <circle class="dot" cx="30" cy="160" r="5"/><circle class="dot" cx="110" cy="146" r="5"/><circle class="dot" cx="190" cy="132" r="5"/><circle class="dot" cx="270" cy="106" r="5"/><circle class="dot" cx="350" cy="82" r="5"/><circle class="dot" cx="430" cy="58" r="5"/><circle class="dot" cx="530" cy="34" r="6"/>
+          </svg></div>
+        </div>
+      </section>
+
+      <section class="bottom glass">
+        <div><h3>Dijital Yol Haritasının Kazanımları</h3><div class="subline">Acenteyi daha güçlü, daha hızlı ve daha sürdürülebilir hale getiren altı temel değer.</div></div>
+        <div class="benefits">
+          <article class="benefit" style="--accent:var(--blue);--w:92%"><div class="icon">V</div><h4>Verimlilik</h4><p>Tekrar eden işleri azaltır, ekip zamanını satış ve müşteri ilişkilerine yönlendirir.</p><div class="mini"><span></span></div></article>
+          <article class="benefit" style="--accent:var(--gold);--w:84%"><div class="icon">₺</div><h4>Maliyet Avantajı</h4><p>Operasyon yükünü, hata maliyetini ve gereksiz tekrarları düşürür.</p><div class="mini"><span></span></div></article>
+          <article class="benefit" style="--accent:var(--purple);--w:88%"><div class="icon">R</div><h4>Rekabet Gücü</h4><p>Daha hızlı teklif, daha düzenli takip ve daha modern hizmet sunar.</p><div class="mini"><span></span></div></article>
+          <article class="benefit" style="--accent:var(--green);--w:90%"><div class="icon">G</div><h4>Güvenlik</h4><p>Yetkilendirme, kayıt izi ve kontrollü veri erişimiyle süreçleri güvenceye alır.</p><div class="mini"><span></span></div></article>
+          <article class="benefit" style="--accent:var(--pink);--w:94%"><div class="icon">M</div><h4>Müşteri Memnuniyeti</h4><p>Hızlı yanıt, açık bilgilendirme ve düzenli iletişimle güven oluşturur.</p><div class="mini"><span></span></div></article>
+          <article class="benefit" style="--accent:var(--cyan);--w:86%"><div class="icon">S</div><h4>Sürdürülebilirlik</h4><p>Büyüyen müşteri ve işlem hacmini daha az kaynakla yönetilebilir kılar.</p><div class="mini"><span></span></div></article>
+        </div>
+        <div class="ticker"><span>verimlilik • maliyet avantajı • rekabet gücü • güvenlik • müşteri memnuniyeti • sürdürülebilirlik • bugünü iyileştirir yarını mümkün kılar •</span></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const stage=document.getElementById('viewport');
+    function fit(){const s=Math.min(window.innerWidth/1920,window.innerHeight/1080);stage.style.transform=`scale(${s})`;}
+    window.addEventListener('resize',fit);fit();
+
+    function animateCounter(el){const target=Number(el.dataset.target||0);const start=performance.now();const duration=1600;function step(now){const p=Math.min((now-start)/duration,1);const val=Math.floor(target*(1-Math.pow(1-p,3)));el.textContent=val+(target===98?'%':'');if(p<1)requestAnimationFrame(step)}requestAnimationFrame(step)}
+    document.querySelectorAll('.num').forEach((el,i)=>setTimeout(()=>animateCounter(el),i*160));
+  </script>
+</body>
+</html>
